@@ -12,12 +12,6 @@ pub struct KhaiiiWord {
     morphs: Vec<KhaiiiMorph>,
 }
 
-impl Default for KhaiiiWord {
-    fn default() -> Self {
-        KhaiiiWord::new()
-    }
-}
-
 pub struct KhaiiiMorph {
     lex: String,
     tag: String,
@@ -59,15 +53,13 @@ impl KhaiiiApi {
     fn open(mut self, rsc_dir: String, opt_str: String) -> Result<Self, String> {
         self = self.close();
 
-        let rsc_dir_cstring: CString;
         let opt_str_cstring = CString::new(opt_str).unwrap();
-
-        if rsc_dir.is_empty() {
-            rsc_dir_cstring = CString::new("/usr/local/share/khaiii").unwrap();
+        let rsc_dir_cstring = if rsc_dir.is_empty() {
+            CString::new("/usr/local/share/khaiii").unwrap()
         } else {
             let path = std::env::current_dir().unwrap();
-            rsc_dir_cstring = CString::new(path.join("share/khaiii").to_str().unwrap()).unwrap();
-        }
+            CString::new(path.join("share/khaiii").to_str().unwrap()).unwrap()
+        };
 
         let handle =
             unsafe { raw::khaiii_open(rsc_dir_cstring.as_ptr(), opt_str_cstring.as_ptr()) };
@@ -115,7 +107,7 @@ impl KhaiiiApi {
             )
         };
 
-        if results == std::ptr::null() {
+        if results.is_null() {
             return Err(self.last_error());
         }
 
@@ -127,7 +119,7 @@ impl KhaiiiApi {
 
     fn get_align(input: String) {}
 
-    fn make_words(&self, input: String, results: *const raw::khaiii_word) -> Vec<KhaiiiWord> {
+    fn make_words(&self, input: String, results: *const raw::khaiii_word_t) -> Vec<KhaiiiWord> {
         let words: Vec<KhaiiiWord> = Vec::new();
 
         words
@@ -144,10 +136,16 @@ impl KhaiiiWord {
         }
     }
 
-    pub fn set(mut self, word: raw::khaiii_word, in_str: String, align: String) {}
+    pub fn set(mut self, word: raw::khaiii_word_t, in_str: String, align: String) {}
 
     fn make_morphs(&self) -> Vec<KhaiiiMorph> {
         Vec::new()
+    }
+}
+
+impl Default for KhaiiiWord {
+    fn default() -> Self {
+        KhaiiiWord::new()
     }
 }
 

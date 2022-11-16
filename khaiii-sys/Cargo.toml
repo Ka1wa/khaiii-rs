@@ -18,6 +18,7 @@ libc = "0.2"
 
 [build-dependencies]
 cmake = "0.1"
+bindgen = "0.61.0"
 
 [features]
 vendored = []

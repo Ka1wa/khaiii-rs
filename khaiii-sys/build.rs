@@ -29,6 +29,7 @@ fn main() {
         println!("cargo:rustc-cfg=khaiii_vendored");
 
         build_khaiii();
+        generate_bindings();
     }
 }
 
@@ -47,4 +48,20 @@ fn build_khaiii() {
 
     println!("cargo:rustc-link-search=native={}", dst.display());
     println!("cargo:rustc-link-lib=dylib=khaiii");
+}
+
+fn generate_bindings() {
+    let dir = PathBuf::from(env::var("OUT_DIR").unwrap());
+
+    let bindings = bindgen::Builder::default()
+        .header(dir.join("include/khaiii/khaiii_api.h").to_str().unwrap())
+        .header(dir.join("include/khaiii/khaiii_dev.h").to_str().unwrap())
+        .parse_callbacks(Box::new(bindgen::CargoCallbacks))
+        .generate()
+        .expect("Unable to generate bindings");
+
+    let out_path = PathBuf::from(env::var("OUT_DIR").unwrap());
+    bindings
+        .write_to_file(out_path.join("bindings.rs"))
+        .expect("Couldn't write bindings!");
 }
