@@ -1,0 +1,3 @@
+[submodule "khaiii-sys/khaiii"]
+	path = khaiii-sys/khaiii
+	url = https://github.com/kakao/khaiii.git
