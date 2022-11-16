@@ -8,8 +8,10 @@ use std::{
 };
 
 fn main() {
+    let out_dir = PathBuf::from(env::var("OUT_DIR").unwrap());
     let vendored = env::var("CARGO_FEATURE_VENDORED").is_ok();
     let lib_dir_isset = env::var("KHAIII_LIB_DIR").is_ok();
+    let include_dir_isset = env::var("KHAIII_INCLUDE_DIR").is_ok();
 
     let use_local_khaiii = !vendored;
     if use_local_khaiii {
@@ -24,12 +26,20 @@ fn main() {
         println!("cargo:rustc-link-lib=dylib=khaiii");
         println!("cargo:warning=Using unknown Khaiii version.");
 
+        let include_dir: PathBuf = if include_dir_isset {
+            PathBuf::from(env::var("KHAIII_INCLUDE_DIR").unwrap())
+        } else {
+            PathBuf::from("/usr/local/include/khaiii")
+        };
+
+        generate_bindings(include_dir);
+
         return;
     } else {
         println!("cargo:rustc-cfg=khaiii_vendored");
 
         build_khaiii();
-        generate_bindings();
+        generate_bindings(out_dir.join("include/khaiii"));
     }
 }
 
@@ -50,12 +60,10 @@ fn build_khaiii() {
     println!("cargo:rustc-link-lib=dylib=khaiii");
 }
 
-fn generate_bindings() {
-    let dir = PathBuf::from(env::var("OUT_DIR").unwrap());
-
+fn generate_bindings(dir: PathBuf) {
     let bindings = bindgen::Builder::default()
-        .header(dir.join("include/khaiii/khaiii_api.h").to_str().unwrap())
-        .header(dir.join("include/khaiii/khaiii_dev.h").to_str().unwrap())
+        .header(dir.join("khaiii_api.h").to_str().unwrap())
+        .header(dir.join("khaiii_dev.h").to_str().unwrap())
         .parse_callbacks(Box::new(bindgen::CargoCallbacks))
         .generate()
         .expect("Unable to generate bindings");
