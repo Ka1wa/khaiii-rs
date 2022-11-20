@@ -1,7 +1,7 @@
 # khaiii-rs
 [Documentation](https://docs.rs/khaiii-rs)
 
-khaiii bindings for Rust.
+[khaiii](https://github.com/kakao/khaiii) bindings for Rust.
 
 ```toml
 [dependencies]
@@ -44,8 +44,15 @@ Testing with vendored source:
 $ cargo test -F vendored-khaiii
 ```
 
+## Usage
+Using khaiii-rs is easiest with khaiii pre-installed on the system. 
+
+In the `examples/` folder are two Rust files demonstrating how to initialize the khaiii API and how to analyze Korean text.
+
+Critically, before the API can analyze text it has to load a couple of resources. On a pre-installed system these can be found under the default `/usr/local/share/khaiii` directory. On systems without a global installation, the resource files can be found in the `khaiii-rs/share/khaiii` folder after performing a cargo build with the vendored-khaiii feature enabled as previously shown in the building section of this README.
+
 ## Operating systems
-As of right now khaiii-sys, (and therefore khaiii-rs), only supports Linux.
+As of right now khaiii-sys, (and therefore khaiii-rs), is only developed for and tested on Linux. While, like khaiii itself, it might work on MacOS (non-ARM) I am unfortunately unable to test and support it.
 
 # License
 This project is licensed under Apache License, Version 2.0, ([LICENSE](LICENSE) or

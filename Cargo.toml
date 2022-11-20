@@ -1,6 +1,6 @@
 [package]
 name = "khaiii-rs"
-version = "0.1.1"
+version = "0.1.2"
 authors = ["Jordy Ruiter <jordy@kaiwa-projects.com>"]
 license = "Apache-2.0"
 keywords = ["khaiii", "korean"]
