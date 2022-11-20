@@ -9,6 +9,9 @@ documentation = "https://docs.rs/khaiii-rs"
 description = "Native bindings to the khaiii library"
 license = "Apache-2.0"
 edition = "2021"
+exclude = [
+    "khaiii/*",
+]
 
 [lib]
 name = "khaiii_sys"
