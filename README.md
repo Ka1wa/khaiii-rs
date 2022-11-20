@@ -8,8 +8,11 @@ khaiii bindings for Rust.
 khaiii-rs = "0.4"
 ```
 
-## Rust version requirements
-khaiii-rs was developed with Rust 1.65.0 but should with most stable Rust versions as well.
+## Requirements
+The following software is required to use khaiii-rs:
+* CMake 3.10 or up
+* Python3
+* Stable Rust. (khaiii-rs was developed with Rust 1.65.0 but should work with most stable Rust versions)
 
 ## Version of khaiii
 Currently this library requires khaiii 0.4. The source for khaiii is
