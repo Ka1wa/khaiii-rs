@@ -5,7 +5,7 @@ khaiii bindings for Rust.
 
 ```toml
 [dependencies]
-khaiii-rs = "0.4"
+khaiii-rs = "0.1"
 ```
 
 ## Requirements
