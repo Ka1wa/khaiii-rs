@@ -1,10 +1,11 @@
 [package]
 name = "khaiii-sys"
-version = "0.4.0+0.4"
+version = "0.1.0+0.4"
 authors = ["Jordy Ruiter <jordy@kaiwa-projects.com>"]
 links = "khaiii"
 build = "build.rs"
 repository = "https://github.com/ka1wa/khaiii-rs"
+documentation = "https://docs.rs/khaiii-rs"
 description = "Native bindings to the khaiii library"
 license = "Apache-2.0"
 edition = "2021"
