@@ -72,7 +72,7 @@ impl KhaiiiApi {
             let local = path.join("share/khaiii");
 
             if local.exists() {
-                CString::new(path.join("share/khaiii").to_str().unwrap()).unwrap()
+                CString::new(local.to_str().unwrap()).unwrap()
             } else {
                 CString::new("/usr/local/share/khaiii").unwrap()
             }

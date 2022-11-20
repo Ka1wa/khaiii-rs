@@ -1,4 +1,5 @@
 extern crate core;
+extern crate fs_extra;
 
 use cmake::Config;
 use std::process::Command;
@@ -7,6 +8,7 @@ use std::{
     path::{Path, PathBuf},
 };
 use regex::Regex;
+use fs_extra::dir;
 
 fn main() {
     let khaiii_sys_version: Vec<&str> = env!("CARGO_PKG_VERSION").split("+").collect::<Vec<&str>>();
@@ -71,8 +73,28 @@ fn main() {
         println!("cargo:rustc-cfg=khaiii_vendored");
 
         build_khaiii();
+        make_large_resources();
         generate_bindings(out_dir.join("include/khaiii"));
     }
+}
+
+fn make_large_resources() {
+    let dst = Config::new("khaiii").build_target("large_resource").build();
+
+    let mut manifest_dir = PathBuf::from(env::var("CARGO_MANIFEST_DIR").unwrap());
+    manifest_dir.pop();
+    let khaiii_rs_dir = manifest_dir.join("share");
+    let share_output_dir = dst.join("build/share/khaiii");
+
+    let mut options = dir::CopyOptions::new();
+    options.skip_exist = true;
+
+    println!("{}", khaiii_rs_dir.to_str().unwrap());
+    println!("{}", share_output_dir.to_str().unwrap());
+
+    fs::create_dir_all(&khaiii_rs_dir).unwrap();
+
+    dir::copy(share_output_dir, khaiii_rs_dir, &options).expect("Could not copy resources.");
 }
 
 fn build_khaiii() {
@@ -83,8 +105,8 @@ fn build_khaiii() {
     }
 
     let dst = PathBuf::from(env::var("OUT_DIR").unwrap());
-    let lib_output_dir = dst.join("build/share/khaiii");
-    fs::create_dir_all(lib_output_dir).unwrap();
+    let share_output_dir = dst.join("build/share/khaiii");
+    fs::create_dir_all(share_output_dir).unwrap();
 
     let dst = Config::new("khaiii").cxxflag("-w").build();
 

@@ -20,6 +20,7 @@ libc = "0.2"
 cmake = "0.1"
 bindgen = "0.62.0"
 regex = "1.7.0"
+fs_extra = "1.2.0"
 
 [features]
 vendored = []
