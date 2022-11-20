@@ -6,8 +6,14 @@ use std::{
     env, fs,
     path::{Path, PathBuf},
 };
+use regex::Regex;
 
 fn main() {
+    let khaiii_sys_version: Vec<&str> = env!("CARGO_PKG_VERSION").split("+").collect::<Vec<&str>>();
+
+    let re_khaiii_version_major = Regex::new(r"#define\s+KHAIII_VERSION_MAJOR\s+(\d+)").unwrap();
+    let re_khaiii_version_minor = Regex::new(r"#define\s+KHAIII_VERSION_MINOR\s+(\d+)").unwrap();
+
     let out_dir = PathBuf::from(env::var("OUT_DIR").unwrap());
     let vendored = env::var("CARGO_FEATURE_VENDORED").is_ok();
     let lib_dir_isset = env::var("KHAIII_LIB_DIR").is_ok();
@@ -24,13 +30,39 @@ fn main() {
         }
 
         println!("cargo:rustc-link-lib=dylib=khaiii");
-        println!("cargo:warning=Using unknown Khaiii version.");
 
         let include_dir: PathBuf = if include_dir_isset {
             PathBuf::from(env::var("KHAIII_INCLUDE_DIR").unwrap())
         } else {
             PathBuf::from("/usr/local/include/khaiii")
         };
+
+        // Try to detect what version of Khaiii is being generated
+        let api_header = include_dir.join("khaiii_api.h");
+        if api_header.exists() {
+            let contents = fs::read_to_string(api_header).unwrap();
+            let mut version_major = 0;
+            let mut version_minor = 0;
+
+            if let Some(caps) = re_khaiii_version_major.captures(&contents) {
+                version_major = (caps.get(1).unwrap().as_str()).parse::<i32>().unwrap();
+            }
+
+            if let Some(caps) = re_khaiii_version_minor.captures(&contents) {
+                version_minor = (caps.get(1).unwrap().as_str()).parse::<i32>().unwrap();
+            }
+
+            if version_major <= 0 && version_minor <= 0 {
+                println!("cargo:warning=Using unknown Khaiii version.");
+            }
+
+            let khaiii_lib_version = khaiii_sys_version.get(1).unwrap().to_string();
+            let found_lib_version = format!("{}.{}", version_major, version_minor);
+
+            if khaiii_lib_version != found_lib_version {
+                println!("cargo:warning=The installed khaiii version {} does not match khaiii-rs linked version {}, this could cause problems.", found_lib_version, khaiii_lib_version);
+            }
+        }
 
         generate_bindings(include_dir);
 
