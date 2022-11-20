@@ -11,7 +11,7 @@ description = "Bindings to Kakao Hangul Analyzer III (khaiii) for parsing and an
 edition = "2021"
 
 [dependencies]
-khaiii-sys = { path = "khaiii-sys", version = "0.1.0" }
+khaiii-sys = { path = "khaiii-sys", version = "0.1.0+0.4" }
 
 [features]
 vendored-khaiii = ["khaiii-sys/vendored"]
