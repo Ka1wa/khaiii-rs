@@ -11,19 +11,21 @@ pub struct KhaiiiApi {
 }
 
 #[derive(Debug, PartialEq, Eq)]
+#[cfg_attr(feature = "serde_support", derive(serde::Serialize, serde::Deserialize))]
 pub struct KhaiiiWord {
-    lex: String,
-    begin: i32,
-    length: i32,
-    morphs: Vec<KhaiiiMorph>,
+    pub lex: String,
+    pub begin: i32,
+    pub length: i32,
+    pub morphs: Vec<KhaiiiMorph>,
 }
 
 #[derive(Debug, PartialEq, Eq)]
+#[cfg_attr(feature = "serde_support", derive(serde::Serialize, serde::Deserialize))]
 pub struct KhaiiiMorph {
-    lex: String,
-    tag: String,
-    begin: i32,
-    length: i32,
+    pub lex: String,
+    pub tag: String,
+    pub begin: i32,
+    pub length: i32,
 }
 
 impl KhaiiiApi {
